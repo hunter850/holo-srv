@@ -1,0 +1,15 @@
+{
+    "version": 2,
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/api"
+        }
+    ],
+    "crons": [
+        {
+            "path": "/api/cron/talent_list",
+            "schedule": "0 0 * * *"
+        }
+    ]
+}

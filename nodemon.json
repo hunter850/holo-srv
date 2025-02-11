@@ -1,0 +1,6 @@
+{
+    "ignore": [
+        "data/**/temp_stations.json",
+        "README"
+    ]
+}
