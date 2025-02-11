@@ -10,10 +10,6 @@
         {
             "path": "/api/cron/talent_list",
             "schedule": "0 0 * * *"
-        },
-        {
-            "path": "/api/test_cron",
-            "schedule": "*/10 * * * *"
         }
     ]
 }

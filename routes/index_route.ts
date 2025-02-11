@@ -30,15 +30,5 @@ export class IndexRouter {
                 requestErrorHandler(res, error);
             }
         });
-        this.router.get("/test_cron", async (req, res) => {
-            try {
-                const now = new Date().toISOString();
-                console.log("now: ", now);
-                res.status(200).json({ success: true, data: now });
-            } catch (error: any) {
-                console.error("Error parsing talent list:", error);
-                requestErrorHandler(res, error);
-            }
-        });
     }
 }
