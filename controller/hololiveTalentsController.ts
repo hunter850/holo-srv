@@ -89,7 +89,6 @@ export class HololiveTalentsController {
                 ],
                 { table: "hololive_talents" }
             );
-            console.log("talentsToUpdate: ", JSON.stringify(talentsToUpdate, null, 4));
             const updateSql =
                 pgp.helpers.update(talentsToUpdate, columnSet, "hololive_talents") + " WHERE v.name = t.name";
             sqls.push(updateSql);
