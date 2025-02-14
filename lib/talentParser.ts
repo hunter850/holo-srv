@@ -67,7 +67,11 @@ class TalentParser {
                 .toArray()
                 .map((cheerEl) => {
                     if (typeof cheerEl?.attribs?.href === "string") {
-                        return cheerEl?.attribs?.href.replace("?sub_confirmation=1", "");
+                        const regex = /^https:\/\/(www\.)?youtube\.com\/channel\/([a-zA-Z0-9][a-zA-Z0-9_-]*)(\/|\?|$)/;
+                        const match = cheerEl?.attribs?.href.match(regex);
+                        return match === null
+                            ? cheerEl?.attribs?.href
+                            : match[0].replace(new RegExp(`\\${match[3]}$`), "");
                     } else {
                         return cheerEl?.attribs?.href;
                     }
