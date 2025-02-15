@@ -31,7 +31,7 @@ app.use(express.json({ limit: "2100000kb" }));
 app.use(
     cors({
         credentials: true,
-        origin: ["http://localhost:3000", "https://hlkw.me"],
+        origin: ["http://localhost:3000", "https://hlkw.me", "https://holo-board.hlkw.me"],
     })
 );
 app.use(logger("dev"));
