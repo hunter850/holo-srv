@@ -99,4 +99,22 @@ export class HololiveTalentsController {
             });
         }
     }
+
+    async getTalentById(id: string) {
+        try {
+            const idInNumber = parseInt(id);
+            if (isNaN(idInNumber)) {
+                throw new Error("Invalid id");
+            }
+            const sql = `
+                SELECT * FROM hololive_talents
+                WHERE id = $1 AND deleted = FALSE;
+            `;
+            const talent = await db.oneOrNone<HololiveTalentsRow>(sql, [idInNumber]);
+            return talent;
+        } catch (error) {
+            console.error("Error getting talent by id:", error);
+            throw error;
+        }
+    }
 }

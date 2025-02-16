@@ -9,6 +9,7 @@ dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 // types
 import type { RequestQuery, RequestBody } from "../app";
 import type { RequestWithGoogleAuth } from "../middleware/googleAuthMiddleware";
+import type { HololiveTalentsRow } from "../controller/hololiveTalentsController";
 
 export const hololiveTalentsController = new HololiveTalentsController();
 
@@ -30,9 +31,23 @@ export class IndexRouter {
     }
 
     initializeRoutes() {
-        this.router.get("/talent_list", async (req, res) => {
+        this.router.get("/talent_list", async (req: RequestQuery<{ id?: string }>, res) => {
             try {
-                const hololiveTalents = await hololiveTalentsController.getTalents();
+                let hololiveTalents: HololiveTalentsRow[] | HololiveTalentsRow | null = null;
+                if (req.query.id) {
+                    // 如果有指定 id，只獲取該筆資料
+                    hololiveTalents = await hololiveTalentsController.getTalentById(req.query.id);
+                    if (!hololiveTalents) {
+                        return res.status(404).json({
+                            success: false,
+                            message: "Talent not found",
+                        });
+                    }
+                } else {
+                    // 如果沒有 id，獲取所有資料
+                    hololiveTalents = await hololiveTalentsController.getTalents();
+                }
+
                 res.status(200).json({
                     success: true,
                     message: "Successfully get talent list",
