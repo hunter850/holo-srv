@@ -1,5 +1,6 @@
 import express, { Router } from "express";
 import { HololiveTalentsController } from "../controller/hololiveTalentsController";
+import TalentParser from "../lib/youtubeParser";
 import requestErrorHandler from "../modules/requestErrorHandler";
 import * as path from "path";
 import dotenv from "dotenv";
@@ -12,6 +13,7 @@ import type { RequestWithGoogleAuth } from "../middleware/googleAuthMiddleware";
 import type { HololiveTalentsRow } from "../controller/hololiveTalentsController";
 
 export const hololiveTalentsController = new HololiveTalentsController();
+const talentParser = new TalentParser();
 
 const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -98,6 +100,23 @@ export class IndexRouter {
                 res.status(200).json({ success: true, data: tokens });
             } catch (error: any) {
                 console.error("Error getting auth:", error);
+                requestErrorHandler(res, error);
+            }
+        });
+        this.router.get("/video_list", async (req: RequestQuery<{ id: string }>, res) => {
+            try {
+                if (typeof req.query?.id !== "string" || req.query?.id === "") {
+                    return res.status(400).json({ success: false, message: "Missing id" });
+                }
+                const talent = await hololiveTalentsController.getTalentById(req.query.id);
+                if (!talent || talent.youtube_link === null) {
+                    return res.status(200).json({ success: true, data: [] });
+                }
+                const streamResult = await talentParser.parseStreams(talent.youtube_link);
+                const videos = talentParser.streamToVideos(streamResult);
+                res.status(200).json({ success: true, data: videos });
+            } catch (error: any) {
+                console.error("Error parsing youtube data:", error);
                 requestErrorHandler(res, error);
             }
         });
