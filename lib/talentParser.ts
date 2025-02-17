@@ -72,7 +72,8 @@ class TalentParser {
                             const origin = url.origin;
                             const pathname =
                                 url.pathname.slice(-1)[0] === "/" ? url.pathname.slice(0, -1) : url.pathname;
-                            return `${origin}${pathname}`;
+                            const pathnameCutTheFeature = pathname.replace(/\/featured$/, "");
+                            return `${origin}${pathnameCutTheFeature}`;
                         } catch {
                             return cheerEl?.attribs?.href;
                         }
