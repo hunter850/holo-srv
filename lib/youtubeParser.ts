@@ -13,8 +13,9 @@ export interface Video {
         height: number;
     }[];
     title: string;
-    viewCountText: number;
+    viewCount: number;
     liveBroadcastContent: "live" | "upcoming" | "none";
+    membershipOnly: boolean;
 }
 
 class TalentParser {
@@ -81,15 +82,20 @@ class TalentParser {
                                 })
                             ) ?? [],
                         title: content?.richItemRenderer?.content?.videoRenderer?.title?.runs?.[0]?.text ?? "",
-                        viewCountText: parseInt(viewCountText),
+                        viewCount: parseInt(viewCountText),
                         liveBroadcastContent:
                             this.liveBroadcastContentMapping?.[
                                 content?.richItemRenderer?.content?.videoRenderer?.thumbnailOverlays?.[0]
                                     ?.thumbnailOverlayTimeStatusRenderer?.style
                             ] ?? "none",
+                        membershipOnly:
+                            content?.richItemRenderer?.content?.videoRenderer?.badges?.find(
+                                (badge: Record<string, any>) => badge?.metadataBadgeRenderer?.style === "BADGE_STYLE_TYPE_MEMBERS_ONLY"
+                            ) !== undefined,
                     };
                 }) ?? [];
-        return videos;
+        const videosFiltered = videos.filter((video) => typeof video.videoId === "string" && video.videoId.length > 0);
+        return videosFiltered;
     }
 }
 
